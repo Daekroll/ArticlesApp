@@ -1,10 +1,26 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 import uvicorn
-app = FastAPI()
+
+from db.session import create_db
+
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Startapp")
+    await create_db()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 from api.v1.endpoints.articles import router as articles_router
+from api.v1.endpoints.auth import router as auth_router
+from api.v1.endpoints.comments import router as comments_router
 
 app.include_router(articles_router)
+app.include_router(auth_router)
+app.include_router(comments_router)
 
 @app.get('/')
 async def root():

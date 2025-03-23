@@ -1,0 +1,34 @@
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from core.security import get_current_user
+from db.models import User
+from db.session import get_db
+from crud.comments import create, read, delete
+from schemas.comment import CommentCreate
+
+router = APIRouter(prefix='/comments', tags=['comments'])
+
+
+@router.post('/create')
+async def create_article(
+        comment: CommentCreate,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    author_id = current_user.id
+    return await create(author_id, comment, db)
+
+
+@router.get('/{article_id:int}')
+async def show_article(article_id: int, db: Session = Depends(get_db)):
+    return await read(article_id, db)
+
+
+@router.delete('/delete/{comment_id:int}')
+async def delete_article(
+        comment_id: int,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    return await delete(comment_id, current_user, db)

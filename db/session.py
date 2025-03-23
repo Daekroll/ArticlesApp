@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-SQLALCHEMY_DATABASE_URL = 'postgresql+asyncpg://user:password@localhost/dbname'
+SQLALCHEMY_DATABASE_URL = 'postgresql+asyncpg://article_user:1234@localhost/articles_db'
 
 engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
 
@@ -14,6 +14,12 @@ SessionLocal = sessionmaker(
 Base = declarative_base()
 
 
-def get_db():
+async def get_db():
     async with SessionLocal() as db:
         yield db
+
+async def create_db():
+    print('Enter in method for create tables')
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    print("Database tables created successfully.")

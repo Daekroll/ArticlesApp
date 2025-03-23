@@ -4,6 +4,7 @@ from sqlalchemy import (
     String,
     Boolean,
     Date,
+    DateTime,
     func
 )
 from sqlalchemy.orm import relationship
@@ -26,4 +27,12 @@ class User(Base):
 
 
     articles = relationship('Article', back_populates='author')
-    comment = relationship('Comment', back_populates='comentator')
+    comment = relationship('Comment', back_populates='commentator')
+
+
+class Token(Base):
+    __tablename__ = 'tokens'
+
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(String, unique=True, index=True)
+    expires_at = Column(DateTime)
