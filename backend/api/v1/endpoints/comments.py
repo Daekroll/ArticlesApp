@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from core.security import get_current_user
-from db.models import User
-from db.session import get_db
-from crud.comments import create, read, delete
-from schemas.comment import CommentCreate
+from backend.core.security import get_current_user
+from backend.db.models import User
+from backend.db.session import get_db
+from backend.crud.comments import create, read, delete
+from backend.schemas.comment import CommentCreate
 
 router = APIRouter(prefix='/comments', tags=['comments'])
 

@@ -18,7 +18,7 @@ class Comment(Base):
     content = Column(String, nullable=False, index=True)
     article_id = Column(Integer, ForeignKey('articles.id') ,index=True)
     author_id = Column(Integer, ForeignKey('users.id') ,index=True)
-    crated_at = Column(DateTime, server_default=func.now(), index=True)
+    created_at = Column(DateTime, server_default=func.now(), index=True)
 
     commentator = relationship('User', back_populates='comment')
     article = relationship('Article', back_populates='comments')

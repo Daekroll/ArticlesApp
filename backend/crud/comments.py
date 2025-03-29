@@ -2,9 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
-from crud.user import get_user
-from db.models import User, Comment
-from schemas.comment import CommentCreate, CommentResponse
+from backend.crud.user import get_user
+from backend.db.models import User, Comment
+from backend.schemas.comment import CommentCreate, CommentResponse
 
 
 async def create(author_id: int, comment: CommentCreate, db: Session):

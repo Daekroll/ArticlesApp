@@ -3,9 +3,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from db.models.user import User, Token
-from schemas.user import UserResponse, UserUpdate
-from core.security import get_password_hash
+from backend.db.models.user import User, Token
+from backend.schemas.user import UserResponse, UserUpdate
+from backend.core import get_password_hash
 
 
 async def get_user(db: Session, user_id: int = None, email: str = None):

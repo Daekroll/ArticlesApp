@@ -7,9 +7,9 @@ from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from argon2 import PasswordHasher
-from db.session import get_db
-from schemas.user import TokenData
-from db.models.user import User, Token
+from backend.db.session import get_db
+from backend.schemas.user import TokenData
+from backend.db.models.user import User, Token
 
 SECRET_KEY = '1h23rui1b3oub5o1u4btoo1u4'
 ALGORITHM = 'HS256'

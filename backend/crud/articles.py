@@ -2,9 +2,9 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
-from crud.user import get_user
-from db.models import Article, User
-from schemas.article import ArticleCreate, ArticleUpdate, ArticleResponse
+from backend.crud.user import get_user
+from backend.db.models import Article, User
+from backend.schemas.article import ArticleCreate, ArticleUpdate, ArticleResponse
 
 
 async def create(author_id: int, article: ArticleCreate, db: Session):
