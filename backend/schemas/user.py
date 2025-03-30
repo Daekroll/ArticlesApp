@@ -22,10 +22,12 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
+    id: int
     full_name: str
     avatar_url: Optional[str]
     email: EmailStr
     is_active: bool
+    is_staff: bool
     create_at: date
 
 
@@ -34,6 +36,7 @@ class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     avatar: Optional[str] = None
     password: Optional[str] = None
+    is_staff: Optional[bool] = None
 
 
 class Token(BaseModel):

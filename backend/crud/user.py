@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from backend.db.models.user import User, Token
 from backend.schemas.user import UserResponse, UserUpdate
-from backend.core import get_password_hash
+from backend.core.security import get_password_hash
 
 
 async def get_user(db: Session, user_id: int = None, email: str = None):
@@ -79,10 +79,12 @@ async def read(db: Session):
     users = await get_user(db=db)
     user_response = [
         UserResponse(
+            id=user.id,
             full_name=user.full_name,
             avatar_url=user.avatar,
             email=user.email,
             is_active=user.is_active,
+            is_staff=user.is_staff,
             create_at=user.created_at,
         ) for user in users
     ]

@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
+from backend.core.decorators import check_article_permission
 from backend.crud.user import get_user
 from backend.db.models import Article, User
 from backend.schemas.article import ArticleCreate, ArticleUpdate, ArticleResponse
@@ -30,26 +31,16 @@ async def read(db: Session):
         title=article.title,
         content=article.content,
         author_name=(await get_user(db=db, user_id=article.author_id)).full_name,
-        created_at=article.crated_at,
+        created_at=article.created_at,
         update_at=article.update_at
     ) for article in articles]
 
     return article_response
 
-
-async def update(data: ArticleUpdate, article_id: int, current_user: User, db: Session):
-    result = await db.execute(select(Article).filter(Article.id==article_id))
+@check_article_permission(Article)
+async def update(article_id: int, current_user: User, db: Session, data: ArticleUpdate):
+    result = await db.execute(select(Article).filter(Article.id == article_id))
     article = result.scalars().first()
-    if not article:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Article not found'
-        )
-    if article.author_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don`t have permission'
-        )
 
     update_data: dict = data.model_dump(exclude_unset=True)
     for key, value in update_data.items():
@@ -61,21 +52,10 @@ async def update(data: ArticleUpdate, article_id: int, current_user: User, db: S
 
     return {'message':'Article updated', 'status':status.HTTP_200_OK}
 
-
+@check_article_permission(Article)
 async def delete(article_id: int, current_user: User, db: Session):
     result = await db.execute(select(Article).filter(Article.id==article_id))
     article = result.scalars().first()
-    if not article:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Article not found'
-        )
-    if article.author_id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You don`t have permission'
-        )
-
 
     await db.delete(article)
     await db.commit()

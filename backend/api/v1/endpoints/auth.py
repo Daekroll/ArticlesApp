@@ -68,17 +68,4 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     return await create(user, db)
 
 
-@router.get('/users', response_model=List[UserResponse])
-async def users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return await read(db)
 
-
-@router.patch('/user-update/{user_id:int}')
-async def updateUser(data: UserUpdate, user_id: int, db: Session = Depends(get_db),
-                     current_user: User = Depends(get_current_user)):
-    return await update(data, user_id, db)
-
-
-@router.delete('/delete/{user_id:int}')
-async def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return await delete(user_id, db)

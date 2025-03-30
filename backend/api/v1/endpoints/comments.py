@@ -11,7 +11,7 @@ router = APIRouter(prefix='/comments', tags=['comments'])
 
 
 @router.post('/create')
-async def create_article(
+async def create_comment(
         comment: CommentCreate,
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
@@ -21,12 +21,12 @@ async def create_article(
 
 
 @router.get('/{article_id:int}')
-async def show_article(article_id: int, db: Session = Depends(get_db)):
+async def show_comment(article_id: int, db: Session = Depends(get_db)):
     return await read(article_id, db)
 
 
 @router.delete('/delete/{comment_id:int}')
-async def delete_article(
+async def delete_comment(
         comment_id: int,
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
