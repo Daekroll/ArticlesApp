@@ -1,6 +1,9 @@
+from enum import unique
+
 from sqlalchemy import (
     Column,
     Integer,
+    ForeignKey,
     String,
     Boolean,
     Date,
@@ -26,10 +29,10 @@ class User(Base):
     created_at = Column(Date, index=True, server_default=func.now())
     avatar = Column(String, index=True, nullable=True)
     is_staff = Column(Boolean, index=True, default=False)
+    activate_link = Column(String, index=True, unique=True)
 
     articles = relationship('Article', back_populates='author')
     comment = relationship('Comment', back_populates='commentator')
-
 
 class Token(Base):
     __tablename__ = 'tokens'
@@ -37,3 +40,5 @@ class Token(Base):
     id = Column(Integer, primary_key=True, index=True)
     token = Column(String, unique=True, index=True)
     expires_at = Column(DateTime)
+
+

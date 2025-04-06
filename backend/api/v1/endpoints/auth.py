@@ -20,9 +20,7 @@ from backend.core.security import (
 )
 from backend.crud.user import (
     create,
-    read,
-    update,
-    delete,
+    activate,
     get_user,
     add_token,
     del_token
@@ -68,4 +66,6 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     return await create(user, db)
 
 
-
+@router.get('/reg-confirm/{token}')
+async def reg_confirm(token: str, db: Session = Depends(get_db)):
+    return await activate(token, db)
