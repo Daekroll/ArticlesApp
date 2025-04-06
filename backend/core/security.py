@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from pathlib import Path
+
 
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
@@ -7,6 +9,8 @@ from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from argon2 import PasswordHasher
+# from fastapi_mail import ConnectionConfig
+
 from backend.db.session import get_db
 from backend.schemas.user import TokenData
 from backend.db.models.user import User, Token
@@ -18,6 +22,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 ph = PasswordHasher()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')
 
+# conf = ConnectionConfig(
+#     MAIL_USERNAME='test_development@mail.ru',
+#     MAIL_PASSWORD='DrM9nyy3cQ9SteQYguGu',
+#     MAIL_FROM='test_development@mail.ru',
+#     MAIL_PORT=465,
+#     MAIL_SERVER='smtp.mail.ru',
+#     MAIL_STARTTLS=False,
+#     MAIL_SSL_TLS=True,
+#     MAIL_FROM_NAME='Articles app',
+#     TEMPLATE_FOLDER=Path('backend/email/templates')
+# )
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

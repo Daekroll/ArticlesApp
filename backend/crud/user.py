@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from backend.db.models.user import User, Token
 from backend.schemas.user import UserResponse, UserUpdate
 from backend.core.security import get_password_hash
+# from backend.email.email import send_email
 
 
 async def get_user(db: Session, user_id: int = None, email: str = None):
@@ -72,6 +73,12 @@ async def create(user, db: Session):
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
+
+    # await send_email(
+    #     new_user,
+    #     'Registration confirm',
+    #     'reg_confirm.html'
+    # )
     return {'message': 'Successfully registered', 'status': status.HTTP_201_CREATED}
 
 
