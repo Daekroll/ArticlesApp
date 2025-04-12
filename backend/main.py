@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from contextlib import asynccontextmanager
 import uvicorn
 
-from backend.core.security import host, port
+from backend.core.settings import HOST, PORT
 from backend.db.session import create_db
 
 
@@ -30,4 +30,4 @@ async def root():
     return {'message':'Welcome to the Articles Root'}
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', host=host, port=port, reload=True)
+    uvicorn.run('main:app', host=HOST, port=PORT, reload=True)

@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from backend.db.models.user import User, Token
 from backend.schemas.user import UserResponse, UserUpdate
-from backend.core.security import get_password_hash, generate_timestamp_link, host, port, verify_timestamp_token
+from backend.core.security import get_password_hash, generate_timestamp_link, verify_timestamp_token
+from backend.core.settings import HOST, PORT
 from backend.articles_email.articles_email import send_email
 
 async def get_user(db: Session, user_id: int = None, email: str = None):
@@ -64,7 +65,7 @@ async def create(user, db: Session):
     hashed_password = get_password_hash(user.password)
     full_link=generate_timestamp_link()
     rand_part, *_ = full_link.split('_')
-    confirmation_url = f'http://{host}:{port}/auth/reg-confirm/{full_link}'
+    confirmation_url = f'http://{HOST}:{PORT}/auth/reg-confirm/{full_link}'
     new_user = User(
         email=user.email,
         hashed_password=hashed_password,

@@ -14,10 +14,10 @@ from backend.schemas.user import (
 )
 from backend.core.security import (
     verify_password,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
     create_access_token,
     get_current_user, oauth2_scheme
 )
+from backend.core.settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from backend.crud.user import (
     create,
     activate,

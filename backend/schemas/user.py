@@ -3,8 +3,7 @@ from typing import Optional
 from datetime import date
 import re
 
-PATTERN_FULL = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%#?&])[A-Za-z\d@$!%#?&]{8,}$'
-PATTERN_LITE = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$'
+from backend.core.settings import PATTERN_LITE
 
 
 class UserCreate(BaseModel):

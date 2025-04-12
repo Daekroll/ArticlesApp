@@ -2,7 +2,7 @@ import datetime
 
 from fastapi_mail import FastMail, MessageSchema, MessageType
 
-from backend.core.security import conf
+from backend.core.settings import conf
 from backend.db.models import User
 
 

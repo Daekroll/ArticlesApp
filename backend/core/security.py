@@ -9,34 +9,16 @@ from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from argon2 import PasswordHasher
-from fastapi_mail import ConnectionConfig
 
 from backend.db.session import get_db
 from backend.schemas.user import TokenData
 from backend.db.models.user import User, Token
-
-SECRET_KEY = '1h23rui1b3oub5o1u4btoo1u4'
-ALGORITHM = 'HS256'
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+from backend.core.settings import SECRET_KEY, ALGORITHM
 
 ph = PasswordHasher()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')
 
-# urls config
-host = '0.0.0.0'
-port = 8000
-conf = ConnectionConfig(
-    MAIL_USERNAME='test-development@mail.ru',
-    MAIL_PASSWORD='ApmHww4udxthsCQgq42P',
-    MAIL_FROM='test-development@mail.ru',
-    MAIL_PORT=465,
-    MAIL_SERVER='smtp.mail.ru',
-    MAIL_STARTTLS=False,
-    MAIL_SSL_TLS=True,
-    MAIL_FROM_NAME='ArticlesApp',
 
-    TEMPLATE_FOLDER='backend/articles_email/templates',
-)
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -79,7 +61,6 @@ async def get_current_user(
     except JWTError:
         raise credentials_exception
 
-
     result = await db.execute(select(User).filter(User.email == token_data.email))
     db_user = result.scalars().first()
     if db_user is None:
@@ -92,6 +73,7 @@ def generate_timestamp_link(length=24, expires_hours=1):
     rand_part = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(length))
 
     return f'{rand_part}_{timestamp}_{expires_hours}'
+
 
 def verify_timestamp_token(token):
     try:
