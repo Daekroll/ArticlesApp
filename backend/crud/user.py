@@ -4,7 +4,7 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
 from backend.db.models.user import User, Token
-from backend.schemas.user import UserResponse, UserUpdate
+from backend.schemas.user import UserResponse, UserUpdate, UserForEmail
 from backend.core.security import get_password_hash, generate_timestamp_link, verify_timestamp_token
 from backend.core.settings import HOST, PORT
 from backend.articles_email.articles_email import send_email
@@ -76,8 +76,9 @@ async def create(user, db: Session):
     await db.commit()
     await db.refresh(new_user)
 
+    user_data = UserForEmail.from_orm(new_user).model_dump()
     await send_email(
-        new_user,
+        user_data,
         confirmation_url,
         'Registration confirm',
         'reg_confirm.html'

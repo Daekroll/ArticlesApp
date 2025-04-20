@@ -1,10 +1,10 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from typing import Optional
+from typing import Optional, Self
 from datetime import date
 import re
 
 from backend.core.settings import PATTERN_LITE
-
+from backend.db.models import User
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -29,6 +29,16 @@ class UserResponse(BaseModel):
     is_staff: bool
     create_at: date
 
+class UserForEmail(BaseModel):
+    email: EmailStr
+    full_name: str = Field(min_length=3, max_length=30)
+
+    @classmethod
+    def from_orm(cls, user: User) -> Self:
+        return cls(
+            email=user.email,
+            full_name=user.full_name
+        )
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
