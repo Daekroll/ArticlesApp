@@ -8,6 +8,8 @@ from backend.schemas.user import UserResponse, UserUpdate, UserForEmail
 from backend.core.security import get_password_hash, generate_timestamp_link, verify_timestamp_token
 from backend.core.settings import HOST, PORT
 from backend.articles_email.articles_email import send_email
+from backend.tasks.email_tasks import send_email_task
+
 
 async def get_user(db: Session, user_id: int = None, email: str = None):
     if user_id is not None:
@@ -76,8 +78,8 @@ async def create(user, db: Session):
     await db.commit()
     await db.refresh(new_user)
 
-    user_data = UserForEmail.from_orm(new_user).model_dump()
-    await send_email(
+    user_data = UserForEmail.from_orm(new_user)
+    await send_email_task(
         user_data,
         confirmation_url,
         'Registration confirm',
