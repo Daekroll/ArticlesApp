@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 from typing import Optional, Self
 from datetime import date
 import re
@@ -29,16 +29,13 @@ class UserResponse(BaseModel):
     is_staff: bool
     create_at: date
 
+    model_config = ConfigDict(from_attributes=True)
+
 class UserForEmail(BaseModel):
     email: EmailStr
     full_name: str = Field(min_length=3, max_length=30)
 
-    @classmethod
-    def from_orm(cls, user: User) -> Self:
-        return cls(
-            email=user.email,
-            full_name=user.full_name
-        )
+    model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None

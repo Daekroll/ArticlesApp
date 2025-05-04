@@ -1,4 +1,6 @@
 import datetime
+from fastapi import status, HTTPException
+from aiosmtplib import SMTPDataError
 
 from fastapi_mail import FastMail, MessageSchema, MessageType
 
@@ -6,17 +8,28 @@ from backend.core.settings import conf
 from backend.schemas.user import UserForEmail
 
 
-async def send_email(user: UserForEmail, activate_link: str, subject: str, template_name: str) -> None:
-    message = MessageSchema(
-        subject=subject,
-        recipients=[user.email],
-        template_body={
-            'full_name': user.full_name,
-            'current_year': datetime.datetime.now().year,
-            'confirmation_link':activate_link
-        },
-        subtype=MessageType.html
-    )
+async def send_email(
+        user: UserForEmail,
+        activate_link: str,
+        subject: str,
+        template_name: str
+) -> None:
+    try:
+        message = MessageSchema(
+            subject=subject,
+            recipients=[user.email],
+            template_body={
+                'full_name': user.full_name,
+                'current_year': datetime.datetime.now().year,
+                'confirmation_link':activate_link
+            },
+            subtype=MessageType.html
+        )
 
-    fm = FastMail(conf)
-    await fm.send_message(message, template_name=template_name)
+        fm = FastMail(conf)
+        await fm.send_message(message, template_name=template_name)
+    except SMTPDataError as smtp:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f'Ошибка данных SMTP: {smtp}'
+        )

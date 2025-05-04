@@ -1,3 +1,5 @@
+from logging.config import dictConfig
+
 from fastapi_mail import ConnectionConfig
 from pathlib import Path
 from dotenv import load_dotenv
@@ -37,3 +39,53 @@ conf = ConnectionConfig(
 
     TEMPLATE_FOLDER=(BASE_DIR / 'articles_email/templates'),
 )
+
+
+
+logs_dir = os.path.join(BASE_DIR, 'logs')
+os.makedirs(logs_dir, exist_ok=True)
+
+logging_config = {
+    'version': 1,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'stream': 'ext://sys.stdout'
+        },
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'standard',
+            'filename': os.path.join(BASE_DIR, 'logs', 'articles_app.log'),
+            'maxBytes': 10485760,  # 10 MB
+            'backupCount': 5,
+            'encoding': 'utf8'
+        },
+    },
+    'loggers': {
+        'console_logger': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False
+        },
+        'file_logger': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': False
+        }
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO'
+    }
+}
+
+dictConfig(logging_config)

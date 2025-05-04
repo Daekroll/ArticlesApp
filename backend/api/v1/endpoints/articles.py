@@ -16,8 +16,7 @@ async def create_article(
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
 ):
-    author_id = current_user.id
-    return await create(author_id, article, db)
+    return await create(current_user, article, db)
 
 @router.get('/')
 async def show_article(db: Session = Depends(get_db)):

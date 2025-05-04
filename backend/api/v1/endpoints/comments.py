@@ -16,8 +16,7 @@ async def create_comment(
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
 ):
-    author_id = current_user.id
-    return await create(author_id, comment, db)
+    return await create(current_user, comment, db)
 
 
 @router.get('/{article_id:int}')
