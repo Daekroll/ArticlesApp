@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import status
+from fastapi import status, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
@@ -10,6 +10,22 @@ from backend.db.models import Article, User
 from backend.schemas.article import ArticleCreate, ArticleUpdate, ArticleResponse
 
 console_logger = logging.getLogger('console_logger')
+
+async def get_articles(db: Session, article_id: int = None):
+    if article_id is None:
+        result = await db.execute(select(Article).order_by(Article.id))
+        articles = result.scalars().all()
+        return articles
+
+
+    result = await db.execute(select(Article).filter(Article.id == article_id))
+    articles = result.scalars().first()
+    if articles is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='article not found'
+        )
+    return articles
 
 @check_user_is_active(schema=ArticleCreate)
 async def create(
@@ -31,16 +47,21 @@ async def create(
 
 
 async def read(db: Session):
-    result = await db.execute(select(Article).order_by(Article.id))
-    articles = result.scalars().all()
+    console_logger.info('Article read start')
+    articles = await get_articles(db)
+    console_logger.info(f'execute db{articles}')
+
     article_response = []
 
     for article in articles:
-        if article.author_name is not None:
+        console_logger.info(f'Enter in for')
+        if article.author_id is not None:
+            console_logger.info(f'Enter in if')
             user = await get_user(db=db, user_id=article.author_id)
             author_name = user.full_name
         else:
             author_name = 'Delete user'
+        console_logger.info(f'Change name{author_name}')
         article_response.append(
             ArticleResponse(
             id=article.id,
@@ -50,13 +71,12 @@ async def read(db: Session):
             created_at=article.created_at,
             update_at=article.update_at
             ))
-
+    console_logger.info('Article read end')
     return article_response
 
 @check_user_permission(Article)
 async def update(article_id: int, current_user: User, db: Session, data: ArticleUpdate):
-    result = await db.execute(select(Article).filter(Article.id == article_id))
-    article = result.scalars().first()
+    article = await get_articles(db, article_id)
 
     update_data: dict = data.model_dump(exclude_unset=True)
     for key, value in update_data.items():
@@ -70,8 +90,7 @@ async def update(article_id: int, current_user: User, db: Session, data: Article
 
 @check_user_permission(Article)
 async def delete(article_id: int, current_user: User, db: Session):
-    result = await db.execute(select(Article).filter(Article.id==article_id))
-    article = result.scalars().first()
+    article = await get_articles(db, article_id)
 
     await db.delete(article)
     await db.commit()

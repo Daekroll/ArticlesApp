@@ -24,5 +24,6 @@ class Article(Base):
     update_at = Column(DateTime, onupdate=func.now(), index=True)
 
     author = relationship('User', back_populates='articles')
-    comments = relationship('Comment', back_populates='article')
+    comments = relationship('Comment', back_populates='article', cascade="all, delete-orphan")
 
+#cascade="all, delete", passive_deletes=True

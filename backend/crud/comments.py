@@ -8,6 +8,7 @@ from backend.core.decorators import check_user_permission, check_user_is_active
 from backend.crud.user import get_user
 from backend.db.models import User, Comment
 from backend.schemas.comment import CommentCreate, CommentResponse
+from crud.articles import get_articles
 
 console_logger = logging.getLogger('console_logger')
 
@@ -17,6 +18,7 @@ async def create(
         comment: CommentCreate,
         db: Session
 ):
+    await get_articles(db, comment.article_id)
     comment = Comment(
         content=comment.content,
         article_id=comment.article_id,
@@ -36,7 +38,7 @@ async def read(article_id: int, db: Session):
     comments_response = []
 
     for comment in comments:
-        if comment.author_name is not None:
+        if comment.author_id is not None:
             user = await get_user(db=db, user_id=comment.author_id)
             author_name = user.full_name
         else:
