@@ -9,9 +9,8 @@ from backend.db.models.user import User, Token
 from backend.schemas.user import UserResponse, UserUpdate, UserForEmail
 from backend.core.security import get_password_hash, generate_timestamp_link, verify_timestamp_token
 from backend.core.settings import HOST, PORT
-from backend.articles_email.articles_email import send_email
 from backend.tasks.email_tasks import send_email_task
-from core.decorators import check_user_is_staff_or_self
+from backend.core.decorators import check_user_is_staff_or_self
 
 console_logger = logging.getLogger('console_logger')
 file_logger = logging.getLogger('file_logger')
@@ -26,6 +25,12 @@ async def get_user(db: Session, user_id: int = None, email: str = None):
     else:
         query = await db.execute(select(User).order_by(User.id))
         result = query.scalars().all()
+
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='User not found'
+        )
     return result
 
 

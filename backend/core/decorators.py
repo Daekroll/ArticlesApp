@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from backend.db.models import User
 from backend.db.session import Base
 from backend.schemas.article import ArticleUpdate
-from schemas.user import UserUpdate
+from backend.schemas.user import UserUpdate
 
 file_logger = logging.getLogger('file_logger')
 

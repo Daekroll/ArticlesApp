@@ -8,7 +8,7 @@ from backend.core.decorators import check_user_permission, check_user_is_active
 from backend.crud.user import get_user
 from backend.db.models import User, Comment
 from backend.schemas.comment import CommentCreate, CommentResponse
-from crud.articles import get_articles
+from backend.crud.articles import get_articles
 
 console_logger = logging.getLogger('console_logger')
 

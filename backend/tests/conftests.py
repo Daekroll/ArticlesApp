@@ -1,0 +1,66 @@
+import pytest
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
+from backend.core.security import get_password_hash
+from backend.db.models.article import Article
+from backend.db.models.user import User
+from backend.db.session import Base
+
+TEST_DATABASE_URL = f'postgresql+asyncpg://test_user:1234@localhost/test_db'
+
+
+@pytest.fixture(scope='function')
+async def db_session():
+    engine = create_async_engine(TEST_DATABASE_URL)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    db = async_session()
+
+    yield db
+
+    await db.close()
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+
+
+@pytest.fixture
+async def test_art_data(db_session):
+    test_user_hashed_password = get_password_hash('Qwerty147')
+    test_users = [User(
+        email='test_user@mail.ru',
+        hashed_password=test_user_hashed_password,
+        full_name='test_user',
+        activate_link=None,
+        is_active=True
+    ),
+    User(
+        email='test_user1@mail.ru',
+        hashed_password=test_user_hashed_password,
+        full_name='test_user1',
+        activate_link=None,
+        is_active=True
+    )]
+
+    db_session.add_all(test_users)
+    await db_session.flush()
+
+    articles = [
+        Article(
+            title='Test article with author',
+            content='Content article 1',
+            author_id=1),
+        Article(
+            title='Test article without author',
+            content='Content article 2',
+            author_id=None)
+    ]
+
+    db_session.add_all(articles)
+    await db_session.commit()
+    for test_user in test_users:
+        await db_session.refresh(test_user)
+    for article in articles:
+        await db_session.refresh(article)
