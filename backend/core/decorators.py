@@ -57,10 +57,10 @@ def check_user_is_active(schema: Type[BaseModel]) -> Callable:
                 **kwargs,
         ):
             if not author.is_active:
-                file_logger.warning('You need  to confirm email')
+                file_logger.warning('You need to confirm email')
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
-                    detail='You need  to confirm email'
+                    detail='You need to confirm email'
                 )
             return await func(author, obj, db, *args, **kwargs)
 

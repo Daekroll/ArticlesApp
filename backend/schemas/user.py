@@ -23,11 +23,11 @@ class UserCreate(BaseModel):
 class UserResponse(BaseModel):
     id: int
     full_name: str
-    avatar_url: Optional[str]
+    avatar: Optional[str]
     email: EmailStr
     is_active: bool
     is_staff: bool
-    create_at: date
+    created_at: date
 
     model_config = ConfigDict(from_attributes=True)
 
