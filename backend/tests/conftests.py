@@ -1,28 +1,44 @@
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from httpx import AsyncClient
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-
+from async_asgi_testclient import TestClient
 from backend.core.security import get_password_hash
 from backend.db.models.article import Article
 from backend.db.models.user import User
 from backend.db.models.comment import Comment
-from backend.db.session import Base
+from backend.db.session import Base, get_db
+from backend.api.v1.endpoints.auth import router as auth_router
+from backend.api.v1.endpoints.users import router as users_router
+from backend.api.v1.endpoints.articles import router as articles_router
+from backend.api.v1.endpoints.comments import router as comments_router
+
+app = FastAPI()
+app.include_router(auth_router)
+app.include_router(users_router)
+app.include_router(articles_router)
+app.include_router(comments_router)
+
+client = TestClient(app)
 
 TEST_DATABASE_URL = f'postgresql+asyncpg://test_user:1234@localhost/test_db'
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 async def db_session():
     engine = create_async_engine(TEST_DATABASE_URL)
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-    db = async_session()
+    async with async_session() as session:
+        try:
+            yield session
+        finally:
+            await session.rollback()
 
-    yield db
-
-    await db.close()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
 
