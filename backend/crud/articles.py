@@ -11,21 +11,29 @@ from backend.schemas.article import ArticleCreate, ArticleUpdate, ArticleRespons
 
 console_logger = logging.getLogger('console_logger')
 
+
+async def get_author_name(db: Session, author_id: int = None):
+    if author_id is not None:
+        user = await get_user(db=db, user_id=author_id)
+        return user.full_name
+    return 'Delete user'
+
+
 async def get_articles(db: Session, article_id: int = None):
     if article_id is None:
         result = await db.execute(select(Article).order_by(Article.id))
         articles = result.scalars().all()
         return articles
 
-
     result = await db.execute(select(Article).filter(Article.id == article_id))
     articles = result.scalars().first()
     if articles is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail='article not found'
+            detail='Article not found'
         )
     return articles
+
 
 @check_user_is_active(schema=ArticleCreate)
 async def create(
@@ -33,46 +41,47 @@ async def create(
         article: ArticleCreate,
         db: Session
 ):
-        article = Article(
-            title=article.title,
-            content=article.content,
-            author_id=author.id
-        )
+    article = Article(
+        title=article.title,
+        content=article.content,
+        author_id=author.id
+    )
 
-        db.add(article)
-        await db.commit()
-        await db.refresh(article)
-        console_logger.info('Article create')
-        return {'message':'Article create', 'status':status.HTTP_201_CREATED}
+    db.add(article)
+    await db.commit()
+    await db.refresh(article)
+    console_logger.info('Article create')
+    return {'message': 'Article create', 'status': status.HTTP_201_CREATED}
 
 
-async def read(db: Session):
-    console_logger.info('Article read start')
-    articles = await get_articles(db)
-    console_logger.info(f'execute db{articles}')
-
-    article_response = []
-
-    for article in articles:
-        console_logger.info(f'Enter in for')
-        if article.author_id is not None:
-            console_logger.info(f'Enter in if')
-            user = await get_user(db=db, user_id=article.author_id)
-            author_name = user.full_name
-        else:
-            author_name = 'Delete user'
-        console_logger.info(f'Change name{author_name}')
-        article_response.append(
-            ArticleResponse(
+async def read(db: Session, article_id: int = None):
+    if article_id:
+        article = await get_articles(db, article_id)
+        author_name = await get_author_name(db, article.author_id)
+        article_response = ArticleResponse(
             id=article.id,
             title=article.title,
             content=article.content,
             author_name=author_name,
             created_at=article.created_at,
             update_at=article.update_at
-            ))
-    console_logger.info('Article read end')
+        )
+    else:
+        article_response = []
+        articles = await get_articles(db)
+        for article in articles:
+            author_name = await get_author_name(db, article.author_id)
+            article_response.append(
+                ArticleResponse(
+                    id=article.id,
+                    title=article.title,
+                    content=f'{article.content[:48]}...',
+                    author_name=author_name,
+                    created_at=article.created_at,
+                    update_at=article.update_at
+                ))
     return article_response
+
 
 @check_user_permission(Article)
 async def update(article_id: int, current_user: User, db: Session, data: ArticleUpdate):
@@ -86,7 +95,8 @@ async def update(article_id: int, current_user: User, db: Session, data: Article
     await db.commit()
     await db.refresh(article)
     console_logger.info('Article updated')
-    return {'message':'Article updated', 'status':status.HTTP_200_OK}
+    return {'message': 'Article updated', 'status': status.HTTP_200_OK}
+
 
 @check_user_permission(Article)
 async def delete(article_id: int, current_user: User, db: Session):

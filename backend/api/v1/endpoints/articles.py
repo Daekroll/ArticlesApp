@@ -22,6 +22,10 @@ async def create_article(
 async def show_article(db: Session = Depends(get_db)):
     return await read(db)
 
+@router.get('/{article_id:int}')
+async def show_article(article_id: int, db: Session = Depends(get_db)):
+    return await read(db, article_id)
+
 @router.patch('/update/{article_id:int}')
 async def update_article(
         data: ArticleUpdate,

@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from backend.core.security import get_password_hash
 from backend.db.models.article import Article
 from backend.db.models.user import User
+from backend.db.models.comment import Comment
 from backend.db.session import Base
 
 TEST_DATABASE_URL = f'postgresql+asyncpg://test_user:1234@localhost/test_db'
@@ -75,10 +76,33 @@ async def test_data(db_session):
     ]
 
     db_session.add_all(articles)
+    await db_session.flush()
+
+    comments = [
+        Comment(
+            content='Comment 1',
+            article_id=1,
+            author_id=1
+        ),
+        Comment(
+            content='Comment 2',
+            article_id=1,
+            author_id=2
+        ),
+        Comment(
+            content='Comment 3',
+            article_id=2,
+            author_id=4
+        )
+    ]
+
+    db_session.add_all(comments)
     await db_session.commit()
     for test_user in test_users:
         await db_session.refresh(test_user)
     for article in articles:
         await db_session.refresh(article)
+    for comment in comments:
+        await db_session.refresh(comment)
 
     return {'users' : test_users}
