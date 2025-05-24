@@ -72,10 +72,10 @@ async def del_token(token: str, db: Session):
 async def create(user, db: Session):
     db_user = await get_user(db=db, email=user.email)
     if db_user:
-        file_logger.warning('Email alredy registered')
+        file_logger.warning('Email already registered')
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail='Email alredy registered'
+            detail='Email already registered'
         )
 
     hashed_password = get_password_hash(user.password)

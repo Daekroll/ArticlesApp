@@ -5,7 +5,7 @@ from httpx import AsyncClient
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from async_asgi_testclient import TestClient
-from backend.core.security import get_password_hash
+from backend.core.security import get_password_hash, generate_timestamp_link
 from backend.db.models.article import Article
 from backend.db.models.user import User
 from backend.db.models.comment import Comment
@@ -30,6 +30,7 @@ TEST_DATABASE_URL = f'postgresql+asyncpg://test_user:1234@localhost/test_db'
 async def db_session():
     engine = create_async_engine(TEST_DATABASE_URL)
     async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
 
     async_session = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
@@ -43,8 +44,10 @@ async def db_session():
         await conn.run_sync(Base.metadata.drop_all)
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 async def test_data(db_session):
+    full_link = generate_timestamp_link()
+    rand_part, *_ = full_link.split('_')
     test_user_hashed_password = get_password_hash('Qwerty147')
     test_users = [User(
         email='test_user@mail.ru',
@@ -64,7 +67,7 @@ async def test_data(db_session):
         email='test_user2@mail.ru',
         hashed_password=test_user_hashed_password,
         full_name='test_user2',
-        activate_link=None,
+        activate_link=rand_part,
         is_active=False
     ),
     User(
@@ -121,4 +124,4 @@ async def test_data(db_session):
     for comment in comments:
         await db_session.refresh(comment)
 
-    return {'users' : test_users}
+    return {'users' : test_users, 'full_link':full_link}

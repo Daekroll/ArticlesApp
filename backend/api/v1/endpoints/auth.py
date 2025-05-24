@@ -1,6 +1,7 @@
 from datetime import timedelta
 from typing import List
 
+from argon2.exceptions import VerifyMismatchError
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -38,10 +39,11 @@ async def login(
     if not db_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Incorrect email or password'
+            detail='User does not exist'
         )
-
-    if not verify_password(from_data.password, db_user.hashed_password):
+    try:
+        verify_password(from_data.password, db_user.hashed_password)
+    except VerifyMismatchError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Incorrect email or password'
