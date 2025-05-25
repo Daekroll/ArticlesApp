@@ -1,11 +1,10 @@
 import pytest
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from async_asgi_testclient import TestClient
-from backend.core.security import get_password_hash, generate_timestamp_link
+from backend.core.security import get_password_hash, generate_timestamp_link, create_access_token
 from backend.db.models.article import Article
 from backend.db.models.user import User
 from backend.db.models.comment import Comment
@@ -14,6 +13,7 @@ from backend.api.v1.endpoints.auth import router as auth_router
 from backend.api.v1.endpoints.users import router as users_router
 from backend.api.v1.endpoints.articles import router as articles_router
 from backend.api.v1.endpoints.comments import router as comments_router
+from backend.crud.user import add_token
 
 app = FastAPI()
 app.include_router(auth_router)
@@ -42,6 +42,19 @@ async def db_session():
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+
+
+@pytest.fixture
+def auth_client(db_session, test_data):
+    async def _auth_client(user_index=3):
+        test_user = test_data['users'][user_index]
+        token = create_access_token({'sub':test_user.email})
+        await add_token(token, db_session)
+        return TestClient(
+            app,
+            headers={"Authorization": f"Bearer {token}"}
+        )
+    return _auth_client
 
 
 @pytest.fixture(scope="function")

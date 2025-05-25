@@ -102,8 +102,8 @@ async def create(user, db: Session):
     return {'message': 'Successfully registered', 'status': status.HTTP_201_CREATED}
 
 
-async def read(current_user: User,db: Session, user_list=False):
-    if current_user.is_staff and user_list:
+async def read(current_user: User,db: Session, all=False):
+    if current_user.is_staff and all:
         users = await get_user(db=db)
         user_response = [
             UserResponse(
@@ -116,7 +116,7 @@ async def read(current_user: User,db: Session, user_list=False):
                 created_at=user.created_at,
             ) for user in users
         ]
-    elif not user_list:
+    elif not all:
         user = await get_user(db=db,user_id=current_user.id)
         user_response = UserResponse.model_validate(user)
     else:

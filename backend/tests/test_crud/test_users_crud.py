@@ -48,7 +48,7 @@ async def test_create_user_with_exist_email(db_session, test_data):
 
     assert len(users_before_create) == len(users_after_create) == 4
     assert exc_info.value.status_code == 400
-    assert exc_info.value.detail == 'Email alredy registered'
+    assert exc_info.value.detail == 'Email already registered'
 
 
 @pytest.mark.asyncio
@@ -71,7 +71,7 @@ async def test_create_user(db_session, test_data):
 @pytest.mark.asyncio
 async def test_read_user_list_by_staff(db_session, test_data):
     current_user = test_data.get('users')
-    users_list = await read(current_user[3], db_session, user_list=True)
+    users_list = await read(current_user[3], db_session, all=True)
 
     assert len(users_list) == 4
     assert users_list[0].full_name == 'test_user'
@@ -82,7 +82,7 @@ async def test_read_user_list_by_staff(db_session, test_data):
 async def test_read_user_list_by_not_staff(db_session, test_data):
     current_user = test_data.get('users')
     with pytest.raises(HTTPException) as exc_info:
-        await read(current_user[0], db_session, user_list=True)
+        await read(current_user[0], db_session, all=True)
 
     assert exc_info.value.status_code == 403
     assert exc_info.value.detail == 'You don`t have permission'

@@ -25,7 +25,7 @@ async def users(db: Session = Depends(get_db), current_user: User = Depends(get_
     return await read(current_user, db, all=True)
 
 
-@router.get('/profile', response_model=List[UserResponse])
+@router.get('/profile', response_model=UserResponse)
 async def profile(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return await read(current_user, db)
 
