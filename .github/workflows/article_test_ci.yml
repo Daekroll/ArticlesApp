@@ -42,5 +42,5 @@ jobs:
 
       - name: Run tests
         run: |
-          cd /home/runner/work/ArticlesApp/ArticlesApp
-          poetry run backend/pytest tests -v
+          cd backend
+          poetry run pytest tests -v
