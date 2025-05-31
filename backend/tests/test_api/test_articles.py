@@ -1,9 +1,9 @@
 from async_asgi_testclient import TestClient
 
-from api.v1.endpoints.articles import router as articles_router
-from tests.conftests import auth_client, db_session, app, test_data
-from db.session import get_db
-from crud.articles import get_articles
+from backend.api.v1.endpoints.articles import router as articles_router
+from backend.tests.conftests import auth_client, db_session, app, test_data
+from backend.db.session import get_db
+from backend.crud.articles import get_articles
 
 
 async def test_get_article(db_session, test_data):
