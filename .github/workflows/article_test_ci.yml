@@ -41,5 +41,6 @@ jobs:
           poetry install --no-interaction --no-root
 
       - name: Run tests
-        run:
-          poetry run backend/pytest tests -v
+        run: |
+          cd backend
+          poetry run pytest tests -v
