@@ -42,5 +42,4 @@ jobs:
 
       - name: Run tests
         run: |
-          cd backend
-          poetry run pytest tests -v
+          poetry run pytest backend/tests -v
