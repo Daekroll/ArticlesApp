@@ -41,7 +41,5 @@ jobs:
           poetry install --no-interaction --no-root
 
       - name: Run tests
-        run: |
-          cd backend
-          poetry install --no-root
-          PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/backend poetry run pytest tests -v
+        run:
+          poetry run backend/pytest tests -v
