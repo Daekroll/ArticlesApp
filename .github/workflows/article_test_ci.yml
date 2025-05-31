@@ -36,11 +36,9 @@ jobs:
           virtualenvs-in-project: true
 
       - name: Install dependencies
-        run: |
-          cd backend
+        run:
           poetry install --no-interaction --no-root
 
       - name: Run tests
-        run: |
-          cd /home/runner/work/ArticlesApp/ArticlesApp
-          poetry run pytest tests -v
+        run:
+          poetry run backend/pytest tests -v
