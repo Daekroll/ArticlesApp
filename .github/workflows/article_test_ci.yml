@@ -42,12 +42,5 @@ jobs:
 
       - name: Run tests
         run: |
-          # Устанавливаем зависимости
           cd backend
-          poetry install --no-root
-          
-          # Устанавливаем проект в режиме разработки
-          pip install -e .
-          
-          # Запускаем тесты с правильным PYTHONPATH
-          PYTHONPATH=$GITHUB_WORKSPACE pytest tests -v
+          poetry run pytest tests -v

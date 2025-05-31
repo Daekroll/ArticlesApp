@@ -20,7 +20,7 @@ PATTERN_LITE = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$'
 
 
 #database settings
-DATABASE_HOST=os.getenv('DATABASE_HOST')
+DATABASE_HOST=os.getenv('DATABASE_HOST','localhost')
 DATABASE_NAME=os.getenv('POSTGRES_DB','test_db')
 DATABASE_USER=os.getenv('POSTGRES_USER','test_user')
 DATABASE_PASSWORD=os.getenv('POSTGRES_PASSWORD','1234')
