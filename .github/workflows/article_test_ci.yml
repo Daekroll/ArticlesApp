@@ -42,4 +42,6 @@ jobs:
 
       - name: Run tests
         run: |
-           python -m pytest backend/tests -v
+          cd backend
+          poetry install
+          PYTHONPATH=$PYTHONPATH:$GITHUB_WORKSPACE/backend poetry run pytest tests -v
