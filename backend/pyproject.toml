@@ -7,6 +7,20 @@ authors = [
 ]
 requires-python = ">=3.12, <4.0"
 
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+packages = [
+    { include = "api" },
+    { include = "articles_email" },
+    { include = "core" },
+    { include = "crud" },
+    { include = "db" },
+    { include = "schemas" },
+    { include = "tasks" },
+    { include = "tests" },
+]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
