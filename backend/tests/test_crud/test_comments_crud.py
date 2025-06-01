@@ -1,9 +1,9 @@
 import pytest
 from fastapi import HTTPException
 
-from backend.crud.comments import create, read, delete
-from backend.tests.conftests import db_session, test_data
-from backend.schemas.comment import CommentCreate
+from crud.comments import create, read, delete
+from tests.conftests import db_session, test_data
+from schemas.comment import CommentCreate
 
 
 @pytest.mark.asyncio

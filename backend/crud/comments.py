@@ -4,11 +4,11 @@ from fastapi import status
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
-from backend.core.decorators import check_user_permission, check_user_is_active
-from backend.crud.user import get_user
-from backend.db.models import User, Comment
-from backend.schemas.comment import CommentCreate, CommentResponse
-from backend.crud.articles import get_articles
+from core.decorators import check_user_permission, check_user_is_active
+from crud.user import get_user
+from db.models import User, Comment
+from schemas.comment import CommentCreate, CommentResponse
+from crud.articles import get_articles
 
 console_logger = logging.getLogger('console_logger')
 

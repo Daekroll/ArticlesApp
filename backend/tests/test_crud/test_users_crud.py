@@ -1,9 +1,9 @@
 import pytest
 from fastapi import HTTPException
 
-from backend.crud.user import get_user, create, read, update, delete
-from backend.tests.conftests import db_session, test_data
-from backend.schemas.user import UserCreate, UserUpdate
+from crud.user import get_user, create, read, update, delete
+from tests.conftests import db_session, test_data
+from schemas.user import UserCreate, UserUpdate
 
 
 @pytest.mark.asyncio

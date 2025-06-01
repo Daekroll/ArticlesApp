@@ -3,11 +3,11 @@ from email.headerregistry import ContentTypeHeader
 from async_asgi_testclient import TestClient
 from prompt_toolkit import Application
 
-from backend.api.v1.endpoints.auth import router as auth_router
-from backend.tests.conftests import client, db_session, app, test_data
-from backend.db.session import get_db
-from backend.core.security import generate_timestamp_link
-from backend.core.settings import HOST, PORT
+from api.v1.endpoints.auth import router as auth_router
+from tests.conftests import client, db_session, app, test_data
+from db.session import get_db
+from core.security import generate_timestamp_link
+from core.settings import HOST, PORT
 
 
 # async def test_register_success(db_session):

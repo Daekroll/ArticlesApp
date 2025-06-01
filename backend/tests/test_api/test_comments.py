@@ -1,9 +1,9 @@
 from async_asgi_testclient import TestClient
 
-from backend.api.v1.endpoints.comments import router as comments_router
-from backend.tests.conftests import auth_client, db_session, app, test_data
-from backend.db.session import get_db
-from backend.crud.comments import read
+from api.v1.endpoints.comments import router as comments_router
+from tests.conftests import auth_client, db_session, app, test_data
+from db.session import get_db
+from crud.comments import read
 
 
 async def test_get_comments(db_session, test_data):

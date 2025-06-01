@@ -1,9 +1,9 @@
 import pytest
 from fastapi import HTTPException
 
-from backend.crud.articles import get_articles, read, update, delete, create
-from backend.tests.conftests import db_session, test_data
-from backend.schemas.article import ArticleUpdate, ArticleCreate
+from crud.articles import get_articles, read, update, delete, create
+from tests.conftests import db_session, test_data
+from schemas.article import ArticleUpdate, ArticleCreate
 
 
 @pytest.mark.asyncio

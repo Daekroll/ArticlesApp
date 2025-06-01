@@ -4,10 +4,10 @@ from fastapi import status, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 
-from backend.core.decorators import check_user_permission, check_user_is_active
-from backend.crud.user import get_user
-from backend.db.models import Article, User
-from backend.schemas.article import ArticleCreate, ArticleUpdate, ArticleResponse
+from core.decorators import check_user_permission, check_user_is_active
+from crud.user import get_user
+from db.models import Article, User
+from schemas.article import ArticleCreate, ArticleUpdate, ArticleResponse
 
 console_logger = logging.getLogger('console_logger')
 

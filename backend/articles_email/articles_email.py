@@ -5,8 +5,8 @@ from aiosmtplib import SMTPDataError
 
 from fastapi_mail import FastMail, MessageSchema, MessageType
 
-from backend.core.settings import conf
-from backend.schemas.user import UserForEmail
+from core.settings import conf
+from schemas.user import UserForEmail
 
 file_logger = logging.getLogger('file_logger')
 

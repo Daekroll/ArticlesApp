@@ -1,7 +1,7 @@
-from backend.api.v1.endpoints.users import router as users_router
-from backend.tests.conftests import auth_client, db_session, app, test_data
-from backend.db.session import get_db
-from backend.crud.user import get_user
+from api.v1.endpoints.users import router as users_router
+from tests.conftests import auth_client, db_session, app, test_data
+from db.session import get_db
+from crud.user import get_user
 
 
 async def test_read_users_by_base_user(db_session, test_data, auth_client):

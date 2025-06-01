@@ -10,10 +10,10 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from argon2 import PasswordHasher
 
-from backend.db.session import get_db
-from backend.schemas.user import TokenData
-from backend.db.models.user import User, Token
-from backend.core.settings import SECRET_KEY, ALGORITHM
+from db.session import get_db
+from schemas.user import TokenData
+from db.models.user import User, Token
+from core.settings import SECRET_KEY, ALGORITHM
 
 ph = PasswordHasher()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')

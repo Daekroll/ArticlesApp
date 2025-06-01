@@ -4,18 +4,18 @@ from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.db.models import User
-from backend.schemas.user import (
+from db.models import User
+from schemas.user import (
     UserResponse,
     UserUpdate
 )
-from backend.core.security import get_current_user
-from backend.crud.user import (
+from core.security import get_current_user
+from crud.user import (
     read,
     update,
     delete
 )
-from backend.db.session import get_db
+from db.session import get_db
 
 router = APIRouter(prefix='/user', tags=['users'])
 

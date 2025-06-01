@@ -8,16 +8,16 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from async_asgi_testclient import TestClient
 
-from backend.core.security import get_password_hash, generate_timestamp_link, create_access_token
-from backend.db.models.article import Article
-from backend.db.models.user import User
-from backend.db.models.comment import Comment
-from backend.db.session import Base, get_db
-from backend.api.v1.endpoints.auth import router as auth_router
-from backend.api.v1.endpoints.users import router as users_router
-from backend.api.v1.endpoints.articles import router as articles_router
-from backend.api.v1.endpoints.comments import router as comments_router
-from backend.crud.user import add_token
+from core.security import get_password_hash, generate_timestamp_link, create_access_token
+from db.models.article import Article
+from db.models.user import User
+from db.models.comment import Comment
+from db.session import Base, get_db
+from api.v1.endpoints.auth import router as auth_router
+from api.v1.endpoints.users import router as users_router
+from api.v1.endpoints.articles import router as articles_router
+from api.v1.endpoints.comments import router as comments_router
+from crud.user import add_token
 
 
 sys.path.insert(0, str(Path(__file__).parent.parent))

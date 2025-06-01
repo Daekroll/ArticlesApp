@@ -3,9 +3,7 @@ from typing import Optional, Self
 from datetime import date
 import re
 
-from backend.core.settings import PATTERN_LITE
-from backend.db.models import User
-
+from core.settings import PATTERN_LITE
 class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8)

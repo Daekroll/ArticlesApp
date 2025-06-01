@@ -5,12 +5,12 @@ from fastapi import HTTPException, status
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 
-from backend.db.models.user import User, Token
-from backend.schemas.user import UserResponse, UserUpdate, UserForEmail
-from backend.core.security import get_password_hash, generate_timestamp_link, verify_timestamp_token
-from backend.core.settings import HOST, PORT
-from backend.tasks.email_tasks import send_email_task
-from backend.core.decorators import check_user_is_staff_or_self
+from db.models.user import User, Token
+from schemas.user import UserResponse, UserUpdate, UserForEmail
+from core.security import get_password_hash, generate_timestamp_link, verify_timestamp_token
+from core.settings import HOST, PORT
+from tasks.email_tasks import send_email_task
+from core.decorators import check_user_is_staff_or_self
 
 console_logger = logging.getLogger('console_logger')
 file_logger = logging.getLogger('file_logger')
