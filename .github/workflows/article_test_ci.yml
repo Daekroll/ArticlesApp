@@ -43,4 +43,4 @@ jobs:
       - name: Run tests
         run: |
           cd backend
-          python -m pytest tests -v
+          PYTHONPATH=$GITHUB_WORKSPACE/backend poetry run pytest tests -v
