@@ -1,6 +1,3 @@
-import sys
-from pathlib import Path
-
 import pytest
 from fastapi import FastAPI
 from httpx import AsyncClient
@@ -20,7 +17,6 @@ from api.v1.endpoints.comments import router as comments_router
 from crud.user import add_token
 
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 app = FastAPI()
