@@ -1,6 +1,9 @@
 import pytest
+import requests
 from fastapi import FastAPI
 from httpx import AsyncClient
+from pydantic import SecretStr
+from pytest_asyncio.plugin import scope
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from async_asgi_testclient import TestClient
@@ -15,7 +18,7 @@ from api.v1.endpoints.users import router as users_router
 from api.v1.endpoints.articles import router as articles_router
 from api.v1.endpoints.comments import router as comments_router
 from crud.user import add_token
-
+from core.settings import conf as CONF
 
 
 
@@ -142,3 +145,41 @@ async def test_data(db_session):
         await db_session.refresh(comment)
 
     return {'users' : test_users, 'full_link':full_link}
+
+
+@pytest.fixture(scope='function')
+def override_smtp_config():
+    original_config = {
+        'MAIL_USERNAME': CONF.MAIL_USERNAME,
+        'MAIL_PASSWORD': CONF.MAIL_PASSWORD,
+        'MAIL_FROM': CONF.MAIL_FROM,
+        'MAIL_PORT': CONF.MAIL_PORT,
+        'MAIL_SERVER': CONF.MAIL_SERVER,
+        'MAIL_STARTTLS': CONF.MAIL_STARTTLS,
+        'MAIL_SSL_TLS': CONF.MAIL_SSL_TLS,
+        'SUPPRESS_SEND': CONF.SUPPRESS_SEND,
+        'USE_CREDENTIALS': CONF.USE_CREDENTIALS,
+        'VALIDATE_CERTS': CONF.VALIDATE_CERTS,
+    }
+
+    CONF.MAIL_USERNAME = ''
+    CONF.MAIL_PASSWORD = SecretStr('')
+    CONF.MAIL_FROM = 'test@example.com'
+    CONF.MAIL_PORT = 1025
+    CONF.MAIL_SERVER = 'localhost'
+    CONF.MAIL_STARTTLS = False
+    CONF.MAIL_SSL_TLS = False
+    CONF.SUPPRESS_SEND = 0
+    CONF.USE_CREDENTIALS = False
+    CONF.VALIDATE_CERTS = 10
+
+    yield
+
+    for key, value in original_config.items():
+        setattr(CONF, key, value)
+
+
+@pytest.fixture(scope='function')
+def clear_mailhog():
+    requests.delete('http://localhost:8025/api/v1/messages', timeout=1)
+    yield

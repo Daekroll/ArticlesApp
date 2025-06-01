@@ -1,0 +1,34 @@
+import pytest
+import requests
+
+from schemas.user import UserForEmail
+from articles_email.articles_email import send_email
+from tests.conftests import override_smtp_config, clear_mailhog
+
+
+@pytest.mark.asyncio
+async def test_send_email_real_smtp(override_smtp_config, clear_mailhog):
+    test_user = UserForEmail(
+        email='test_user_fake@mail.ru',
+        full_name='New Test User'
+    )
+
+    await send_email(
+        user=test_user,
+        subject='Test Email',
+        template_name='reg_confirm.html',
+        activate_link='https;//test.com'
+    )
+
+
+    response = requests.get('http://localhost:8025/api/v2/messages')
+    messages = response.json()
+    last_message = messages['items'][0]
+    recipients = last_message.get('Content').get('Headers').get('To')
+    subject = last_message.get('Content').get('Headers').get('Subject')
+
+
+    assert response.status_code == 200
+    assert len(messages['items']) > 0
+    assert test_user.email in recipients
+    assert 'Test Email' in subject
