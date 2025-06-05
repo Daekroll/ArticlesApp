@@ -95,9 +95,9 @@ async def create(user, db: Session):
     user_data = UserForEmail.model_validate(new_user)
     await send_email_task(
         user_data,
-        confirmation_url,
         'Registration confirm',
-        'reg_confirm.html'
+        'reg_confirm.html',
+        confirmation_url
     )
     return {'message': 'Successfully registered', 'status': status.HTTP_201_CREATED}
 
