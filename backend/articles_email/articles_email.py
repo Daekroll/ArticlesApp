@@ -13,9 +13,9 @@ file_logger = logging.getLogger('file_logger')
 
 async def send_email(
         user: UserForEmail,
-        activate_link: str,
         subject: str,
-        template_name: str
+        template_name: str,
+        activate_link: str
 ) -> None:
     try:
         message = MessageSchema(
