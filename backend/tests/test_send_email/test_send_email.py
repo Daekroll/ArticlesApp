@@ -41,7 +41,12 @@ async def test_send_email_task_real(override_smtp_config, clear_mailhog):
         full_name='Test User'
     )
 
-    await send_email_task.apply(args=(test_user, 'Test Email', 'reg_confirm.html', 'https://example.com')).get()
+    await send_email_task.apply(args=(
+        test_user,
+        'Test Email',
+        'reg_confirm.html',
+        'https://example.com'
+    )).get()
 
     response = requests.get('http://localhost:8025/api/v2/messages')
     messages = response.json()
