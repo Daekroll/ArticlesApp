@@ -39,7 +39,7 @@ conf = ConnectionConfig(
     MAIL_SSL_TLS=True,
     MAIL_FROM_NAME='ArticlesApp',
 
-    TEMPLATE_FOLDER=(BASE_DIR / '/templates/'),
+    TEMPLATE_FOLDER=(BASE_DIR / 'templates/'),
     SUPPRESS_SEND=os.getenv('SUPPRESS_SEND','1') == '1'
 )
 
