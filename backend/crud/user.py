@@ -69,6 +69,28 @@ async def del_token(token: str, db: Session):
     await db.commit()
     console_logger.info('Token delete')
 
+
+async def send_link(user: User, db: Session):
+    full_link = generate_timestamp_link()
+    rand_part, *_ = full_link.split('_')
+    confirmation_url = f"http://{HOST}:{PORT}/auth/reg-confirm/{full_link}"
+    db_user = await get_user(db, email=user.email)
+    db_user.conf_reg_link = rand_part
+
+    db.add(db_user)
+    await db.commit()
+    await db.refresh(db_user)
+
+    user_data = UserForEmail.model_validate(db_user)
+
+    await send_email_task(
+        user=user_data,
+        subject='Подтверждение регистрации',
+        template_name='reg_confirm.html',
+        link=confirmation_url
+    )
+
+
 async def create(user, db: Session):
     db_user = await get_user(db=db, email=user.email)
     if db_user:
@@ -99,6 +121,8 @@ async def create(user, db: Session):
         'reg_confirm.html',
         confirmation_url
     )
+    await send_link(new_user, db)
+
     return {'message': 'Successfully registered', 'status': status.HTTP_201_CREATED}
 
 

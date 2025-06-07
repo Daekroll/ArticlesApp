@@ -25,7 +25,8 @@ from crud.user import (
     activate,
     get_user,
     add_token,
-    del_token
+    del_token,
+    send_link
 )
 from db.session import get_db
 
@@ -72,3 +73,12 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
 @router.get('/reg-confirm/{token}')
 async def reg_confirm(token: str, db: Session = Depends(get_db)):
     return await activate(token, db)
+
+
+@router.get('/get_link')
+async def get_link(
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    await send_link(current_user, db)
+    return {'message': 'link was sent'}
