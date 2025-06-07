@@ -140,7 +140,7 @@ async def test_get_link(db_session, test_data):
     async with TestClient(app) as client:
         response = await client.post(
             f'{auth_router.prefix}/login',
-            form={'username': user.email, 'password': 'Qwerty741'},
+            form={'username': user.email, 'password': 'Qwerty147'},
             headers={'Content-Type': 'application/x-www-form-urlencoded'},
         )
         token = response.json().get('access_token')
