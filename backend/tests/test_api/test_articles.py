@@ -48,7 +48,7 @@ async def test_create_article_by_active_user(db_session, test_data, auth_client)
     response_data = response.json()
     new_article_count = await get_articles(db_session)
     assert len(new_article_count) == 3
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response_data.get('message') == 'Article create'
 
 

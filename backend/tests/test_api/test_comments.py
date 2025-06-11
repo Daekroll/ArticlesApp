@@ -39,7 +39,7 @@ async def test_create_comments_by_active_user(db_session, test_data, auth_client
     response_data = response.json()
     new_comment_count = await read(1, db_session)
     assert len(new_comment_count) == 3
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert response_data.get('message') == 'Comment successfully added'
 
 
